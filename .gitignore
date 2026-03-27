@@ -1,0 +1,26 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Large model files (exceeds GitHub 100 MB limit)
+# Download via: python -X utf8 backend/train_models.py
+models/random_forest.pkl
+
+# Temp & generated files
+*.log
+*.tmp
+pip_log.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

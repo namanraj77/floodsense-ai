@@ -1,0 +1,82 @@
+{
+  "dataset_info": {
+    "total_samples": 50000,
+    "test_samples": 10000,
+    "split_ratio": "80/20",
+    "random_state": 42,
+    "threshold": 0.5,
+    "n_features": 24
+  },
+  "results": {
+    "Random Forest": {
+      "R2": 0.7991,
+      "RMSE": 0.02237,
+      "MAE": 0.01756,
+      "MSE": 0.0005,
+      "Accuracy": 0.8941,
+      "Precision": 0.9196,
+      "Recall": 0.8718,
+      "Sensitivity": 0.8718,
+      "Specificity": 0.9181,
+      "F1_Score": 0.895,
+      "AUC_ROC": 0.9671,
+      "Kappa": 0.7883
+    },
+    "XGBoost": {
+      "R2": 0.9924,
+      "RMSE": 0.00435,
+      "MAE": 0.00326,
+      "MSE": 1.9e-05,
+      "Accuracy": 0.9726,
+      "Precision": 0.991,
+      "Recall": 0.9558,
+      "Sensitivity": 0.9558,
+      "Specificity": 0.9907,
+      "F1_Score": 0.9731,
+      "AUC_ROC": 0.9982,
+      "Kappa": 0.9452
+    },
+    "SVM": {
+      "R2": 0.9881,
+      "RMSE": 0.00543,
+      "MAE": 0.00387,
+      "MSE": 3e-05,
+      "Accuracy": 0.9643,
+      "Precision": 0.9963,
+      "Recall": 0.9345,
+      "Sensitivity": 0.9345,
+      "Specificity": 0.9963,
+      "F1_Score": 0.9644,
+      "AUC_ROC": 0.9987,
+      "Kappa": 0.9287
+    },
+    "LSTM": {
+      "R2": 0.9989,
+      "RMSE": 0.00167,
+      "MAE": 0.00122,
+      "MSE": 3e-06,
+      "Accuracy": 0.9926,
+      "Precision": 0.9998,
+      "Recall": 0.9859,
+      "Sensitivity": 0.9859,
+      "Specificity": 0.9998,
+      "F1_Score": 0.9928,
+      "AUC_ROC": 1.0,
+      "Kappa": 0.9852
+    },
+    "Ensemble": {
+      "R2": 0.983,
+      "RMSE": 0.0065,
+      "MAE": 0.00468,
+      "MSE": 4.2e-05,
+      "Accuracy": 0.9735,
+      "Precision": 0.9954,
+      "Recall": 0.9533,
+      "Sensitivity": 0.9533,
+      "Specificity": 0.9952,
+      "F1_Score": 0.9739,
+      "AUC_ROC": 0.999,
+      "Kappa": 0.947
+    }
+  }
+}

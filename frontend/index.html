@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FloodSense AI - Flood Prediction & Early Warning System</title>
+  <meta name="description" content="AI-powered flood prediction system using LSTM, Random Forest, XGBoost, and SVM models for accurate flood risk assessment and early warning." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Particle background -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <div class="logo-icon">🌊</div>
+        <span class="logo-text">FloodSense <span class="logo-ai">AI</span></span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#dashboard" class="nav-link active" onclick="showSection('dashboard')">Dashboard</a></li>
+        <li><a href="#predict" class="nav-link" onclick="showSection('predict')">Predict</a></li>
+        <li><a href="#analytics" class="nav-link" onclick="showSection('analytics')">Analytics</a></li>
+        <li><a href="#models" class="nav-link" onclick="showSection('models')">Models</a></li>
+        <li><a href="#about" class="nav-link" onclick="showSection('about')">About</a></li>
+      </ul>
+      <div class="nav-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span class="status-text" id="statusText">Connecting...</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- ===== DASHBOARD SECTION ===== -->
+    <section id="dashboard" class="section active">
+      <!-- Hero -->
+      <div class="hero">
+        <div class="hero-content">
+          <div class="hero-badge">🤖 AI-Powered Prediction System</div>
+          <h1 class="hero-title">
+            Intelligent Flood<br />
+            <span class="gradient-text">Risk Assessment</span>
+          </h1>
+          <p class="hero-subtitle">
+            Leveraging 4 advanced ML models — LSTM, Random Forest, XGBoost & SVM —
+            to deliver precise, real-time flood probability predictions with ensemble averaging.
+          </p>
+          <div class="hero-actions">
+            <button class="btn-primary" onclick="showSection('predict')">
+              <span>Start Prediction</span>
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+            <button class="btn-secondary" onclick="showSection('analytics')">
+              View Analytics
+            </button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="globe-container">
+            <div class="globe">
+              <div class="globe-ring ring-1"></div>
+              <div class="globe-ring ring-2"></div>
+              <div class="globe-ring ring-3"></div>
+              <div class="globe-center">
+                <div class="flood-icon">🌊</div>
+              </div>
+              <div class="orbit-dot dot-1"></div>
+              <div class="orbit-dot dot-2"></div>
+              <div class="orbit-dot dot-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card" id="stat-samples">
+          <div class="stat-icon">📊</div>
+          <div class="stat-value" id="totalSamples">50,000</div>
+          <div class="stat-label">Training Samples</div>
+          <div class="stat-change positive">+100% coverage</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🤖</div>
+          <div class="stat-value">4</div>
+          <div class="stat-label">ML Models</div>
+          <div class="stat-change positive">Ensemble Ready</div>
+        </div>
+        <div class="stat-card" id="stat-accuracy">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-value" id="ensembleAcc">—</div>
+          <div class="stat-label">Ensemble R² Score</div>
+          <div class="stat-change positive">Best Accuracy</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-value">20+</div>
+          <div class="stat-label">Risk Factors</div>
+          <div class="stat-change positive">Analyzed</div>
+        </div>
+      </div>
+
+      <!-- Models overview -->
+      <div class="section-title">
+        <h2>ML Model Overview</h2>
+        <p>Four state-of-the-art models working in concert</p>
+      </div>
+      <div class="models-grid">
+        <div class="model-card lstm">
+          <div class="model-icon">🔴</div>
+          <div class="model-name">LSTM</div>
+          <div class="model-desc">Long Short-Term Memory neural network with 3 LSTM layers, batch normalization, and dropout for temporal pattern learning</div>
+          <div class="model-stats" id="lstm-stats">
+            <span class="model-stat">R²: <strong>—</strong></span>
+            <span class="model-stat">RMSE: <strong>—</strong></span>
+          </div>
+        </div>
+        <div class="model-card rf">
+          <div class="model-icon">🌲</div>
+          <div class="model-name">Random Forest</div>
+          <div class="model-desc">Ensemble of 300 decision trees with feature importance ranking for interpretable flood probability estimation</div>
+          <div class="model-stats" id="rf-stats">
+            <span class="model-stat">R²: <strong>—</strong></span>
+            <span class="model-stat">RMSE: <strong>—</strong></span>
+          </div>
+        </div>
+        <div class="model-card xgb">
+          <div class="model-icon">⚡</div>
+          <div class="model-name">XGBoost</div>
+          <div class="model-desc">Gradient boosted trees with 500 estimators, regularization, and subsampling for maximum predictive performance</div>
+          <div class="model-stats" id="xgb-stats">
+            <span class="model-stat">R²: <strong>—</strong></span>
+            <span class="model-stat">RMSE: <strong>—</strong></span>
+          </div>
+        </div>
+        <div class="model-card svm">
+          <div class="model-icon">🔵</div>
+          <div class="model-name">SVM</div>
+          <div class="model-desc">Support Vector Regression with RBF kernel for robust non-linear flood probability estimation in high dimensions</div>
+          <div class="model-stats" id="svm-stats">
+            <span class="model-stat">R²: <strong>—</strong></span>
+            <span class="model-stat">RMSE: <strong>—</strong></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PREDICT SECTION ===== -->
+    <section id="predict" class="section">
+      <div class="section-header">
+        <h1>Flood Risk <span class="gradient-text">Prediction</span></h1>
+        <p>Enter environmental and socioeconomic parameters to get ML-powered flood probability</p>
+      </div>
+
+      <div class="predict-layout">
+        <!-- Input Form -->
+        <div class="input-panel">
+          <div class="panel-header">
+            <h3>⚙️ Input Parameters</h3>
+            <div class="preset-btns">
+              <button class="preset-btn" onclick="loadPreset('low')">Low Risk</button>
+              <button class="preset-btn" onclick="loadPreset('medium')">Medium Risk</button>
+              <button class="preset-btn" onclick="loadPreset('high')">High Risk</button>
+              <button class="preset-btn" onclick="resetForm()">Reset</button>
+            </div>
+          </div>
+
+          <div class="form-categories">
+            <!-- Climate -->
+            <div class="form-category">
+              <div class="category-header">🌤️ Climate Factors</div>
+              <div class="sliders-grid">
+                <div class="slider-group">
+                  <label>Monsoon Intensity <span class="val" id="val-MonsoonIntensity">5</span></label>
+                  <input type="range" id="MonsoonIntensity" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Climate Change <span class="val" id="val-ClimateChange">5</span></label>
+                  <input type="range" id="ClimateChange" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Geography -->
+            <div class="form-category">
+              <div class="category-header">🗺️ Geography & Topography</div>
+              <div class="sliders-grid">
+                <div class="slider-group">
+                  <label>Topography Drainage <span class="val" id="val-TopographyDrainage">5</span></label>
+                  <input type="range" id="TopographyDrainage" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Coastal Vulnerability <span class="val" id="val-CoastalVulnerability">5</span></label>
+                  <input type="range" id="CoastalVulnerability" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Landslides <span class="val" id="val-Landslides">5</span></label>
+                  <input type="range" id="Landslides" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Infrastructure -->
+            <div class="form-category">
+              <div class="category-header">🏗️ Infrastructure</div>
+              <div class="sliders-grid">
+                <div class="slider-group">
+                  <label>River Management <span class="val" id="val-RiverManagement">5</span></label>
+                  <input type="range" id="RiverManagement" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Dams Quality <span class="val" id="val-DamsQuality">5</span></label>
+                  <input type="range" id="DamsQuality" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Drainage Systems <span class="val" id="val-DrainageSystems">5</span></label>
+                  <input type="range" id="DrainageSystems" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Deteriorating Infrastructure <span class="val" id="val-DeterioratingInfrastructure">5</span></label>
+                  <input type="range" id="DeterioratingInfrastructure" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Environment -->
+            <div class="form-category">
+              <div class="category-header">🌿 Environment</div>
+              <div class="sliders-grid">
+                <div class="slider-group">
+                  <label>Deforestation <span class="val" id="val-Deforestation">5</span></label>
+                  <input type="range" id="Deforestation" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Siltation <span class="val" id="val-Siltation">5</span></label>
+                  <input type="range" id="Siltation" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Wetland Loss <span class="val" id="val-WetlandLoss">5</span></label>
+                  <input type="range" id="WetlandLoss" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Watersheds <span class="val" id="val-Watersheds">5</span></label>
+                  <input type="range" id="Watersheds" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Socioeconomic -->
+            <div class="form-category">
+              <div class="category-header">👥 Socioeconomic</div>
+              <div class="sliders-grid">
+                <div class="slider-group">
+                  <label>Urbanization <span class="val" id="val-Urbanization">5</span></label>
+                  <input type="range" id="Urbanization" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Agricultural Practices <span class="val" id="val-AgriculturalPractices">5</span></label>
+                  <input type="range" id="AgriculturalPractices" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Encroachments <span class="val" id="val-Encroachments">5</span></label>
+                  <input type="range" id="Encroachments" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Population Score <span class="val" id="val-PopulationScore">5</span></label>
+                  <input type="range" id="PopulationScore" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Policy -->
+            <div class="form-category">
+              <div class="category-header">📋 Policy & Governance</div>
+              <div class="sliders-grid">
+                <div class="slider-group">
+                  <label>Ineffective Disaster Preparedness <span class="val" id="val-IneffectiveDisasterPreparedness">5</span></label>
+                  <input type="range" id="IneffectiveDisasterPreparedness" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Inadequate Planning <span class="val" id="val-InadequatePlanning">5</span></label>
+                  <input type="range" id="InadequatePlanning" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+                <div class="slider-group">
+                  <label>Political Factors <span class="val" id="val-PoliticalFactors">5</span></label>
+                  <input type="range" id="PoliticalFactors" min="0" max="15" value="5" oninput="updateVal(this)" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-predict" id="predictBtn" onclick="runPrediction()">
+            <span class="btn-text">🌊 Analyze Flood Risk</span>
+            <div class="btn-loader" style="display:none">⏳ Analyzing...</div>
+          </button>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel" id="resultsPanel">
+          <!-- Loading state -->
+          <div class="results-placeholder" id="resultsPlaceholder">
+            <div class="placeholder-icon">🎯</div>
+            <h3>Ready to Predict</h3>
+            <p>Adjust the parameters on the left and click "Analyze Flood Risk" to get predictions from all 4 models</p>
+          </div>
+
+          <!-- Results content -->
+          <div class="results-content" id="resultsContent" style="display:none">
+            
+            <!-- Main Prediction -->
+            <div class="main-prediction">
+              <div class="prediction-gauge" id="predictionGauge">
+                <svg class="gauge-svg" viewBox="0 0 200 120">
+                  <path class="gauge-bg" d="M 20 110 A 80 80 0 0 1 180 110" stroke="#1e293b" stroke-width="16" fill="none" stroke-linecap="round"/>
+                  <path class="gauge-fill" id="gaugeFill" d="M 20 110 A 80 80 0 0 1 180 110" stroke="#22c55e" stroke-width="16" fill="none" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="251"/>
+                </svg>
+                <div class="gauge-center">
+                  <div class="gauge-percent" id="gaugePercent">0%</div>
+                  <div class="gauge-label">Flood Probability</div>
+                </div>
+              </div>
+              
+              <div class="risk-badge" id="riskBadge">
+                <span class="risk-icon" id="riskIcon">🟢</span>
+                <span class="risk-level" id="riskLevel">Low Risk</span>
+              </div>
+              <div class="confidence-bar">
+                <span>Model Confidence:</span>
+                <div class="conf-track">
+                  <div class="conf-fill" id="confFill" style="width:0%"></div>
+                </div>
+                <span id="confValue">0%</span>
+              </div>
+            </div>
+
+            <!-- Model Comparison -->
+            <div class="model-comparison">
+              <h3>📊 Model Comparison</h3>
+              <div class="model-bars" id="modelBars">
+                <div class="model-bar-item">
+                  <div class="model-bar-label">LSTM</div>
+                  <div class="model-bar-track">
+                    <div class="model-bar-fill lstm-bar" id="bar-lstm" style="width:0%"></div>
+                  </div>
+                  <div class="model-bar-value" id="val-lstm">0%</div>
+                </div>
+                <div class="model-bar-item">
+                  <div class="model-bar-label">Random Forest</div>
+                  <div class="model-bar-track">
+                    <div class="model-bar-fill rf-bar" id="bar-rf" style="width:0%"></div>
+                  </div>
+                  <div class="model-bar-value" id="val-rf">0%</div>
+                </div>
+                <div class="model-bar-item">
+                  <div class="model-bar-label">XGBoost</div>
+                  <div class="model-bar-track">
+                    <div class="model-bar-fill xgb-bar" id="bar-xgb" style="width:0%"></div>
+                  </div>
+                  <div class="model-bar-value" id="val-xgb">0%</div>
+                </div>
+                <div class="model-bar-item">
+                  <div class="model-bar-label">SVM</div>
+                  <div class="model-bar-track">
+                    <div class="model-bar-fill svm-bar" id="bar-svm" style="width:0%"></div>
+                  </div>
+                  <div class="model-bar-value" id="val-svm">0%</div>
+                </div>
+                <div class="model-bar-item ensemble-row">
+                  <div class="model-bar-label">⭐ Ensemble</div>
+                  <div class="model-bar-track">
+                    <div class="model-bar-fill ensemble-bar" id="bar-ensemble" style="width:0%"></div>
+                  </div>
+                  <div class="model-bar-value" id="val-ensemble">0%</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="recommendations">
+              <h3>💡 Recommendations</h3>
+              <div class="recs-list" id="recsList"></div>
+            </div>
+
+            <!-- Radar Chart -->
+            <div class="radar-card">
+              <h3>🕸️ Risk Factor Radar</h3>
+              <canvas id="radarChart" width="300" height="300"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ANALYTICS SECTION ===== -->
+    <section id="analytics" class="section">
+      <div class="section-header">
+        <h1>Data <span class="gradient-text">Analytics</span></h1>
+        <p>Explore model performance metrics and dataset insights</p>
+      </div>
+
+      <div class="analytics-grid">
+        <!-- Performance Chart -->
+        <div class="chart-card wide">
+          <div class="chart-header">
+            <h3>🏆 Model Performance Comparison</h3>
+            <span class="chart-subtitle">R², RMSE, and MAE across all models</span>
+          </div>
+          <canvas id="performanceChart" height="120"></canvas>
+        </div>
+
+        <!-- Distribution Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>📊 Flood Probability Distribution</h3>
+          </div>
+          <canvas id="distributionChart" height="200"></canvas>
+        </div>
+
+        <!-- Feature Importance -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>🔍 Feature Importance</h3>
+          </div>
+          <canvas id="featureChart" height="200"></canvas>
+        </div>
+
+        <!-- Scatter Plot -->
+        <div class="chart-card wide">
+          <div class="chart-header">
+            <h3>🎯 Actual vs Predicted (Sample)</h3>
+            <span class="chart-subtitle">Model accuracy visualization across sample predictions</span>
+          </div>
+          <canvas id="scatterChart" height="120"></canvas>
+        </div>
+      </div>
+
+      <!-- Metrics Table -->
+      <div class="metrics-table-card">
+        <h3>📋 Detailed Model Metrics</h3>
+        <div class="table-wrapper">
+          <table class="metrics-table" id="metricsTable">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>R² Score</th>
+                <th>RMSE</th>
+                <th>MAE</th>
+                <th>Accuracy (±0.05)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="metricsBody">
+              <tr><td colspan="6" class="loading-row">Loading metrics...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MODELS SECTION ===== -->
+    <section id="models" class="section">
+      <div class="section-header">
+        <h1>ML <span class="gradient-text">Models</span></h1>
+        <p>Technical details about each machine learning model</p>
+      </div>
+
+      <div class="models-detail-grid">
+        <!-- LSTM Card -->
+        <div class="model-detail-card">
+          <div class="detail-header lstm-header">
+            <div class="detail-icon">🔴</div>
+            <div>
+              <h2>LSTM Neural Network</h2>
+              <span class="detail-type">Deep Learning</span>
+            </div>
+          </div>
+          <div class="detail-body">
+            <div class="detail-section">
+              <h4>Architecture</h4>
+              <ul>
+                <li>3 LSTM layers (128 → 64 → 32 units)</li>
+                <li>Batch Normalization after each layer</li>
+                <li>Dropout (0.2, 0.2, 0.1) for regularization</li>
+                <li>Dense layers: 64 → 32 → 1 (sigmoid)</li>
+                <li>Adam optimizer (lr=0.001)</li>
+              </ul>
+            </div>
+            <div class="detail-section">
+              <h4>Training Config</h4>
+              <ul>
+                <li>Epochs: Up to 100 (Early Stopping)</li>
+                <li>Batch Size: 64</li>
+                <li>Validation Split: 15%</li>
+                <li>ReduceLROnPlateau callback</li>
+              </ul>
+            </div>
+            <div class="detail-metrics" id="lstm-detail-metrics">
+              <div class="dm-item"><span>R²</span><strong>—</strong></div>
+              <div class="dm-item"><span>RMSE</span><strong>—</strong></div>
+              <div class="dm-item"><span>MAE</span><strong>—</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RF Card -->
+        <div class="model-detail-card">
+          <div class="detail-header rf-header">
+            <div class="detail-icon">🌲</div>
+            <div>
+              <h2>Random Forest</h2>
+              <span class="detail-type">Ensemble Learning</span>
+            </div>
+          </div>
+          <div class="detail-body">
+            <div class="detail-section">
+              <h4>Hyperparameters</h4>
+              <ul>
+                <li>n_estimators: 300 trees</li>
+                <li>max_depth: 12</li>
+                <li>max_features: sqrt</li>
+                <li>min_samples_split: 2</li>
+                <li>Parallel processing: All CPU cores</li>
+              </ul>
+            </div>
+            <div class="detail-section">
+              <h4>Strengths</h4>
+              <ul>
+                <li>Interpretable feature importances</li>
+                <li>Robust to outliers</li>
+                <li>Handles non-linear relationships</li>
+                <li>No feature scaling required</li>
+              </ul>
+            </div>
+            <div class="detail-metrics" id="rf-detail-metrics">
+              <div class="dm-item"><span>R²</span><strong>—</strong></div>
+              <div class="dm-item"><span>RMSE</span><strong>—</strong></div>
+              <div class="dm-item"><span>MAE</span><strong>—</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- XGBoost Card -->
+        <div class="model-detail-card">
+          <div class="detail-header xgb-header">
+            <div class="detail-icon">⚡</div>
+            <div>
+              <h2>XGBoost</h2>
+              <span class="detail-type">Gradient Boosting</span>
+            </div>
+          </div>
+          <div class="detail-body">
+            <div class="detail-section">
+              <h4>Hyperparameters</h4>
+              <ul>
+                <li>n_estimators: 500 boosting rounds</li>
+                <li>learning_rate: 0.05</li>
+                <li>max_depth: 6</li>
+                <li>subsample: 0.8</li>
+                <li>reg_alpha: 0.1, reg_lambda: 1.0</li>
+              </ul>
+            </div>
+            <div class="detail-section">
+              <h4>Training</h4>
+              <ul>
+                <li>Early stopping on validation set</li>
+                <li>L1 & L2 regularization</li>
+                <li>Column subsampling (0.8)</li>
+                <li>Handles missing values natively</li>
+              </ul>
+            </div>
+            <div class="detail-metrics" id="xgb-detail-metrics">
+              <div class="dm-item"><span>R²</span><strong>—</strong></div>
+              <div class="dm-item"><span>RMSE</span><strong>—</strong></div>
+              <div class="dm-item"><span>MAE</span><strong>—</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SVM Card -->
+        <div class="model-detail-card">
+          <div class="detail-header svm-header">
+            <div class="detail-icon">🔵</div>
+            <div>
+              <h2>Support Vector Machine</h2>
+              <span class="detail-type">Kernel Method</span>
+            </div>
+          </div>
+          <div class="detail-body">
+            <div class="detail-section">
+              <h4>Hyperparameters</h4>
+              <ul>
+                <li>Kernel: RBF (Radial Basis Function)</li>
+                <li>C: 10.0 (regularization)</li>
+                <li>gamma: scale</li>
+                <li>epsilon: 0.01 (tube width)</li>
+              </ul>
+            </div>
+            <div class="detail-section">
+              <h4>Preprocessing</h4>
+              <ul>
+                <li>StandardScaler normalization required</li>
+                <li>Trained on scaled features</li>
+                <li>High-dimensional kernel mapping</li>
+                <li>Optimal margin hyperplane</li>
+              </ul>
+            </div>
+            <div class="detail-metrics" id="svm-detail-metrics">
+              <div class="dm-item"><span>R²</span><strong>—</strong></div>
+              <div class="dm-item"><span>RMSE</span><strong>—</strong></div>
+              <div class="dm-item"><span>MAE</span><strong>—</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ensemble Section -->
+      <div class="ensemble-card">
+        <div class="ensemble-header">
+          <div class="ensemble-icon">⭐</div>
+          <div>
+            <h2>Ensemble Averaging Strategy</h2>
+            <p>Combining predictions from all 4 models for superior accuracy</p>
+          </div>
+        </div>
+        <div class="ensemble-formula">
+          <div class="formula-box">
+            <span class="formula-text">
+              P<sub>ensemble</sub> = (P<sub>LSTM</sub> + P<sub>RF</sub> + P<sub>XGB</sub> + P<sub>SVM</sub>) / 4
+            </span>
+          </div>
+        </div>
+        <div class="ensemble-benefits">
+          <div class="benefit">
+            <div class="benefit-icon">📉</div>
+            <div>Reduces variance by averaging diverse model predictions</div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">🎯</div>
+            <div>Captures linear, non-linear, and temporal patterns simultaneously</div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">🛡️</div>
+            <div>More robust against individual model failures or biases</div>
+          </div>
+          <div class="benefit">
+            <div class="benefit-icon">📈</div>
+            <div>Consistently achieves higher R² than any single model</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ABOUT SECTION ===== -->
+    <section id="about" class="section">
+      <div class="section-header">
+        <h1>About the <span class="gradient-text">Project</span></h1>
+        <p>Flash Flood Detection & Early Warning System using AI/ML</p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card main-about">
+          <h2>🌊 FloodSense AI</h2>
+          <p>
+            FloodSense AI is an advanced machine learning system designed to predict flood probability
+            using a comprehensive set of 20+ environmental, geographical, infrastructure, socioeconomic,
+            and policy-related parameters. The system uses an ensemble of four state-of-the-art ML models
+            to provide accurate, reliable flood risk assessments.
+          </p>
+          <p>
+            Trained on 50,000 data samples, the system captures complex non-linear relationships between
+            flood-causing factors and outputs a probability score from 0 to 1, categorized into risk levels
+            from "Very Low" to "Very High".
+          </p>
+          <div class="tech-stack">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">Flask</span>
+            <span class="tech-tag">TensorFlow</span>
+            <span class="tech-tag">Scikit-learn</span>
+            <span class="tech-tag">XGBoost</span>
+            <span class="tech-tag">Pandas</span>
+            <span class="tech-tag">NumPy</span>
+            <span class="tech-tag">Chart.js</span>
+          </div>
+        </div>
+
+        <div class="about-card">
+          <h3>📊 Dataset</h3>
+          <ul class="about-list">
+            <li>50,000 training samples</li>
+            <li>20 primary features</li>
+            <li>4 derived engineered features</li>
+            <li>Flood probability range: 0.0 – 1.0</li>
+            <li>Features span: Climate, Geography, Infrastructure, Environment, Socioeconomic, Policy</li>
+          </ul>
+        </div>
+
+        <div class="about-card">
+          <h3>🎯 Key Features</h3>
+          <ul class="about-list">
+            <li>Real-time prediction using 4 ML models</li>
+            <li>Ensemble averaging for best accuracy</li>
+            <li>Interactive parameter sliders</li>
+            <li>Risk level categorization</li>
+            <li>Actionable recommendations</li>
+            <li>Model performance analytics</li>
+            <li>Feature importance visualization</li>
+          </ul>
+        </div>
+
+        <div class="about-card">
+          <h3>🏫 Academic Context</h3>
+          <ul class="about-list">
+            <li>MCA Project — IILM University</li>
+            <li>Focus: AI/ML for disaster management</li>
+            <li>Real-world applicable solution</li>
+            <li>End-to-end ML pipeline</li>
+            <li>Production-ready architecture</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
