@@ -288,7 +288,7 @@ curl -X POST http://localhost:5000/api/predict \
 
 ## 👥 Authors
 
-**Daksh** — MCA Research Project, IILM University
+**Daksh Chahuan and Naman Raj** — MCA Research Project, IILM University
 
 ---
 
